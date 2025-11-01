@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmConnect - Shop</title>
+    <style>
+        :root {
+            --primary: #4a8f3c;
+            --secondary: #f0f7ed;
+            --accent: #ff8a00;
+            --text: #333;
+            --light: #fff;
+            --gray: #f5f5f5;
+            --border: #ddd;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--text);
+            line-height: 1.6;
+            background-color: var(--gray);
+        }
+        
+        .header {
+            background-color: var(--light);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 24px;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .search {
+            position: relative;
+            width: 200px;
+        }
+        
+        .search input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            outline: none;
+        }
+        
+        .search button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cart-icon, .user-icon {
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .cart-icon:hover, .user-icon:hover {
+            color: var(--primary);
+        }
+        
+        /* Shop Page Specific Styles */
+        .shop-hero {
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .shop-hero h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .shop-hero p {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .shop-content {
+            padding: 40px 0;
+        }
+        
+        .filters {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .filter-group select, 
+        .filter-group input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .product-card {
+            background-color: var(--light);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-info {
+            padding: 15px;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .farmer-info {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .product-price {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .add-to-cart {
+            background-color: var(--accent);
+            color: var(--light);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .add-to-cart:hover {
+            background-color: #e07b00;
+        }
+        
+        .organic-badge {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--light);
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-right: 5px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            gap: 10px;
+        }
+        
+        .pagination button {
+            background-color: var(--light);
+            border: 1px solid var(--border);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .pagination button.active {
+            background-color: var(--primary);
+            color: var(--light);
+            border-color: var(--primary);
+        }
+        
+        .pagination button:hover:not(.active) {
+            background-color: var(--secondary);
+        }
+        
+        .no-products {
+            text-align: center;
+            padding: 40px;
+            background-color: var(--light);
+            border-radius: 8px;
+        }
+        
+        footer {
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 8px;
+        }
+        
+        .footer-column a {
+            color: var(--light);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-column a:hover {
+            opacity: 1;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    🌱 Farm<span>Connect</span>
+                </a>
+                
+               
+                <a href="cart.html" class="cart-icon" id="cartIcon">
+                    🛒
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+
+                
+                <div class="header-actions">
+                    <div class="search">
+                        <input type="text" id="searchInput" placeholder="Search fresh produce...">
+                        <button>🔍</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Shop Hero -->
+    <section class="shop-hero">
+        <div class="container">
+            <h1>Our Fresh Harvest</h1>
+            <p>Browse our selection of seasonal, locally-grown produce straight from family farms to your table</p>
+        </div>
+    </section>
+
+    <!-- Shop Content -->
+    <section class="shop-content">
+        <div class="container">
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="categoryFilter">Category</label>
+                        <select id="categoryFilter">
+                            <option value="all">All Categories</option>
+                            <option value="fruits">Fruits</option>
+                            <option value="vegetables">Vegetables</option>
+                            <option value="dairy">Dairy</option>
+                            <option value="eggs">Eggs & Poultry</option>
+                            <option value="grains">Grains</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="farmerFilter">Farmer</label>
+                        <select id="farmerFilter">
+                            <option value="all">All Farmers</option>
+                            <option value="greenhills">Green Hills Farm</option>
+                            <option value="sunnymeadows">Sunny Meadows</option>
+                            <option value="rivervalley">River Valley Organics</option>
+                            <option value="heritage">Heritage Family Farm</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sortFilter">Sort By</label>
+                        <select id="sortFilter">
+                            <option value="popularity">Popularity</option>
+                            <option value="price-low">Price (Low to High)</option>
+                            <option value="price-high">Price (High to Low)</option>
+                            <option value="newest">Newest Arrivals</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="organicFilter">Organic Only</label>
+                        <select id="organicFilter">
+                            <option value="all">Show All</option>
+                            <option value="organic">Organic Only</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="products-grid" id="productsGrid">
+                <!-- Product cards will be added here dynamically -->
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <button class="active">1</button>
+                <button>2</button>
+                <button>3</button>
+                <button>Next →</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Shop</h3>
+                    <ul>
+                        <li><a href="#">Fruits & Vegetables</a></li>
+                        <li><a href="#">Dairy Products</a></li>
+                        <li><a href="#">Eggs & Poultry</a></li>
+                        <li><a href="#">Grains</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <ul>
+                        <li><a href="#">Our Mission</a></li>
+                        <li><a href="#">Meet Our Farmers</a></li>
+                        <li><a href="#">Sustainability</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Customer Service</h3>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Shipping & Returns</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Join Our Community</h3>
+                    <ul>
+                        <li><a href="#">Newsletter</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Fetch products from database
+
+
+        // Sample product data - in a real application, this would come from a database/API
+        const productsData = [
+            {
+                id: 1,
+                name: "Organic Strawberries",
+                farmer: "Green Hills Farm",
+                price: 50,
+                image: "./images/strawberries.jpeg",
+                category: "fruits",
+                organic: true
+            },
+            {
+                id: 2,
+                name: "Free-Range Eggs",
+                farmer: "Heritage Family Farm",
+                price: 10,
+                image: "./images/egg.jpeg",
+                category: "eggs",
+                organic: false
+            },
+            {
+                id: 3,
+                name: "Fresh Spinach",
+                farmer: "River Valley Organics",
+                price: 30,
+                image: "./images/spinach.jpeg",
+                category: "vegetables",
+                organic: true
+            },
+            {
+                id: 4,
+                name: "Whole Milk",
+                farmer: "Sunny Meadows",
+                price: 60,
+                image: "./images/milk.jpeg",
+                category: "dairy",
+                organic: true
+            },
+            {
+                id: 5,
+                name: "Red Apples",
+                farmer: "Green Hills Farm",
+                price: 100,
+                image: "./images/apple.jpeg",
+                category: "fruits",
+                organic: false
+            },
+            {
+                id: 6,
+                name: "Organic Carrots",
+                farmer: "River Valley Organics",
+                price: 100,
+                image: "./images/carrot.jpeg",
+                category: "vegetables",
+                organic: true
+            },
+            {
+                id: 7,
+                name: "Artisan Cheese",
+                farmer: "Sunny Meadows",
+                price: 300,
+                image: "./images/cheese.jpeg",
+                category: "dairy",
+                organic: false
+            },
+            {
+                id: 8,
+                name: "Organic Quinoa",
+                farmer: "Heritage Family Farm",
+                price: 200,
+                image: "./images/qunioa.jpeg",
+                category: "grains",
+                organic: true
+            }
+        ];
+
+        // Cart functionality
+        let cart = [];
+        
+        // Function to render products
+        function renderProducts(products) {
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.innerHTML = '';
+            
+            if (products.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="no-products">
+                        <h3>No products found</h3>
+                        <p>Try adjusting your filters</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name} ${product.organic ? '<span class="organic-badge">Organic</span>' : ''}</div>
+                        <div class="farmer-info">by ${product.farmer}</div>
+                        <div class="product-meta">
+                            <div class="product-price">₹${product.price.toFixed(2)}</div>
+                            <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+            
+            // Add event listeners to the Add to Cart buttons
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    addToCart(productId);
+                });
+            });
+        }
+        
+        // Function to filter products
+        function filterProducts() {
+            const category = document.getElementById('categoryFilter').value;
+            const farmer = document.getElementById('farmerFilter').value;
+            const organic = document.getElementById('organicFilter').value;
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filteredProducts = productsData.filter(product => {
+                if (category !== 'all' && product.category !== category) return false;
+                if (farmer !== 'all') {
+                    const farmerKey = farmer.toLowerCase();
+                    if (!product.farmer.toLowerCase().includes(farmerKey)) return false;
+                }
+                if (organic === 'organic' && !product.organic) return false;
+                if (searchQuery && !product.name.toLowerCase().includes(searchQuery)) return false;
+                
+                return true;
+            });
+            
+            // Sort the products
+            const sortMethod = document.getElementById('sortFilter').value;
+            switch (sortMethod) {
+                case 'price-low':
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'newest':
+                    // For this demo, we'll just reverse the order as if newer items are at the end
+                    filteredProducts.reverse();
+                    break;
+                // For "popularity" we'll keep the original order for this demo
+            }
+            
+            renderProducts(filteredProducts);
+        }
+        
+        // Function to add products to cart
+        function addToCart(productId) {
+            const product = productsData.find(p => p.id === productId);
+            if (!product) return;
+            
+            // Check if product is already in cart
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+            
+            // Save cart to localStorage
+            localStorage.setItem('farmconnect-cart', JSON.stringify(cart));
+            
+            // Show a notification
+            alert(`${product.name} added to cart!`);
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if there's a saved cart
+            const savedCart = localStorage.getItem('farmconnect-cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            }
+            
+            // Render products initially
+            renderProducts(productsData);
+            
+            // Add event listeners to filters
+            document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+            document.getElementById('farmerFilter').addEventListener('change', filterProducts);
+            document.getElementById('organicFilter').addEventListener('change', filterProducts);
+            document.getElementById('sortFilter').addEventListener('change', filterProducts);
+            document.getElementById('searchInput').addEventListener('input', filterProducts);
+            
+            // Add event listener to cart icon
+            document.getElementById('cartIcon').addEventListener('click', function() {
+                // In a real app, this would redirect to cart.html
+                alert('Cart functionality will be implemented in cart.html');
+                // window.location.href = 'cart.html';
+            });
+            
+            // Add event listeners to pagination
+            document.querySelectorAll('#pagination button').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelector('#pagination button.active').classList.remove('active');
+                    this.classList.add('active');
+                    // In a real application, this would load the corresponding page of products
+                });
+            });
+        });
+        // Function to save cart to localStorage
+function saveCart() {
+    localStorage.setItem('farmconnect-cart', JSON.stringify(cart));
+}
+
+// Function to update cart count
+function updateCartCount() {
+    const cartCount = document.getElementById('cartCount');
+    const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+    cartCount.textContent = itemCount;
+}
+
+// Function to add to cart
+function addToCart(productId) {
+    const product = productsData.find(p => p.id === productId);
+    
+    if (!product) {
+        return;
+    }
+    
+    const existingItemIndex = cart.findIndex(item => item.id === productId);
+    
+    if (existingItemIndex !== -1) {
+        cart[existingItemIndex].quantity += 1;
+    } else {
+        cart.push({
+            id: product.id,
+            name: product.name,
+            farmer: product.farmer,
+            price: product.price,
+            image: product.image,
+            organic: product.organic,
+            quantity: 1
+        });
+    }
+    
+    saveCart();
+    updateCartCount();
+    
+    // Show confirmation
+    alert(`${product.name} added to cart!`);
+}
+
+// Load cart on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Load cart from localStorage
+    const savedCart = localStorage.getItem('farmconnect-cart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+        updateCartCount();
+    }
+    
+    // Add event listeners to "Add to Cart" buttons
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = parseInt(this.dataset.id);
+            addToCart(productId);
+        });
+    });
+});
+
+    </script>
+</body>
+</html>
